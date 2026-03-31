@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SiteSure</title>
+</head>
+
+<style>
+     * {
+    margin: 0;
+    padding: 0;
+    /* box-sizing: border-box; */
+  }
+
+  body {
+    height: 100vh;
+    overflow: hidden; /* prevents scroll */
+    background-color: #E2EBD1;
+    font-family: Poppins, sans-serif;
+  }
+
+    .container{
+        height: 100%;
+        width: 100%;
+        position: relative;
+    }
+
+    .imgwrapper{
+        height: 100%;
+        width: 100%;
+        margin: 20px;
+    }
+
+    .imgwrapper img{
+        height: 100%;
+        width: 100%;
+        clip-path: polygon(
+            /* coordinates - top-left, start dip, triangle(inverted), end dip, top right, bottom right, bottom left cut */
+            0% 0%,       
+            55% 0%,      
+            70% 18%,     
+            85% 0%,      
+            100% 0%,     
+            100% 100%,   
+            30% 100%,
+            0% 50%
+        );
+        object-fit: cover;
+
+    }
+</style>
+
+<body>
+    <div class="container">
+        <div class="imgwrapper"><img src="home1.jpg" alt="Building"></div>
+        <div class="txt">SiteSure</div>
+    </div>
+</body>
+</html>
