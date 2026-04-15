@@ -1,11 +1,304 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>SiteSure</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
+<style>
+    body {
+        margin: 0%;
+        padding: 0%;
+        font-family: "Poppins", sans-serif;
+        color: white;
+        background-color: black;
+    }
+
+    img {
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        z-index: -1;
+        opacity: 65%;
+    }
+
+    .nav {
+        display: flex;
+        gap: 50px;
+        align-items: center;
+    }
+
+    .nav a {
+        text-decoration: none;
+        color: white;
+        font-size: 22px;
+        font-weight: 500;
+        transition: scale 0.2s ease;
+    }
+
+    .nav a:hover {
+        scale: 1.05;
+    }
+
+    /* Sign out styled differently to stand out */
+    .nav a#authNavBtn.signout {
+        color: rgb(255, 255, 255);
+        border: 1px solid rgb(255, 255, 255);
+        padding: 4px 16px;
+        border-radius: 6px;
+        font-size: 18px;
+        transition: background 0.2s, scale 0.2s ease;
+    }
+
+    .nav a#authNavBtn.signout:hover {
+        background: rgba(255, 173, 20, 0.15);
+        scale: 1.05;
+    }
+
+    .header {
+        display: flex;
+        color: rgb(255, 173, 20);
+        gap: 450px;
+        padding: 15px;
+        justify-content: flex-end;
+    }
+
+    header img {
+        width: 10px;
+        height: 50px;
+    }
+
+    main {
+        text-align: center;
+        justify-content: center;
+    }
+
+    main h1 {
+        font-size: 200px;
+        text-shadow: 0px 4px 10px black;
+        line-height: 40%;
+    }
+
+    main p {
+        font-size: 25px;
+        text-shadow: 4px 4px 4px rgb(0, 0, 0);
+    }
+
+    footer {
+        justify-content: center;
+        text-align: center;
+    }
+
+    footer button {
+        margin-top: 3%;
+        padding: 10px;
+        width: 320px;
+        height: 60px;
+        border-radius: 10px;
+        font-family: "Poppins", sans-serif;
+        font-size: 25px;
+        font-weight: bold;
+        color: black;
+        box-shadow: 0px 2px 2px black;
+        opacity: 1;
+        transition: scale 0.2s ease;
+    }
+
+    footer button:hover {
+        scale: 1.02;
+        cursor: pointer;
+    }
+
+    /* Greeting pill shown when logged in */
+    .user-greeting {
+        display: none;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        color: rgba(255,255,255,0.6);
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.15);
+        padding: 4px 14px;
+        border-radius: 20px;
+    }
+
+    .user-greeting.visible {
+        display: flex;
+    }
+
+    .user-greeting img {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        position: static;
+        opacity: 1;
+        object-fit: cover;
+    }
+
+    /* Auth Popup */
+    .auth-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.7);
+        backdrop-filter: blur(4px);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+    }
+    .auth-overlay.show { display: flex; }
+
+    .auth-popup {
+        background: rgba(10,10,10,0.95);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 16px;
+        padding: 36px 32px;
+        text-align: center;
+        max-width: 360px;
+        width: 90%;
+        box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+        animation: popIn 0.2s ease;
+    }
+    @keyframes popIn {
+        from { transform: scale(0.92); opacity: 0; }
+        to   { transform: scale(1);    opacity: 1; }
+    }
+    .auth-popup .lock-icon { font-size: 40px; margin-bottom: 12px; }
+    .auth-popup h3 { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+    .auth-popup p { font-size: 14px; color: rgba(255,255,255,0.55); margin-bottom: 24px; text-shadow: none; }
+    .auth-popup .btn-signin {
+        display: block; width: 100%; padding: 11px;
+        background: rgb(255,173,20); color: black;
+        font-family: "Poppins", sans-serif; font-size: 15px; font-weight: 700;
+        border: 1px solid transparent; border-radius: 8px; cursor: pointer;
+        text-decoration: none; margin-bottom: 10px;
+        box-shadow: 0 2px 12px rgba(255,173,20,0.35);
+        transition: opacity 0.2s;
+        box-sizing: border-box;
+    }
+    .auth-popup .btn-signin:hover { opacity: 0.88; }
+    .auth-popup .btn-cancel {
+        background: transparent; border: 1px solid rgba(255,255,255,0.2);
+        color: rgba(255,255,255,0.6); font-family: "Poppins", sans-serif;
+        font-size: 14px; padding: 9px; width: 100%;
+        border-radius: 8px; cursor: pointer; transition: background 0.2s;
+        box-sizing: border-box;
+    }
+    .auth-popup .btn-cancel:hover { background: rgba(255,255,255,0.07); }
+</style>
+
 <body>
-    
+    <img src="../images/back1.jpg" alt="">
+
+    <!-- Auth required popup -->
+    <div class="auth-overlay" id="authOverlay">
+        <div class="auth-popup">
+            <div class="lock-icon">🔒</div>
+            <h3>Sign in required</h3>
+            <p id="popupMsg">You need to be signed in to access this page.</p>
+            <a href="login.html" class="btn-signin">Sign In</a>
+            <button class="btn-cancel" onclick="closePopup()">Maybe later</button>
+        </div>
+    </div>
+
+    <div class="header">
+        <div class="nav">
+            <a href="index.html">Home</a>
+            <a href="#" onclick="guardedNav(event, 'materiallog.html', 'Logs')">Logs</a>
+            <a href="#" onclick="guardedNav(event, 'gallery.html', 'Gallery')">Reports</a>
+            <a href="about.html">About</a>
+            <!-- greeting shown when logged in -->
+            <span class="user-greeting" id="userGreeting">
+                <img id="userAvatar" src="" alt="">
+                <span id="userName"></span>
+            </span>
+            <!-- dynamically becomes Login or Sign Out -->
+            <a href="#" id="authNavBtn" onclick="handleAuthClick(event)">Login</a>
+        </div>
+    </div>
+
+    <main>
+        <h1>SiteSure</h1>
+        <p>"Building trust through precision — ensuring every <br> structure meets the highest standards of safety,
+            durability, and quality."</p>
+    </main>
+    <footer>
+        <button>+ Add Report📝</button>
+    </footer>
+
+    <script>
+        const authBtn = document.getElementById('authNavBtn');
+        const userGreeting = document.getElementById('userGreeting');
+        const userNameEl = document.getElementById('userName');
+        const userAvatarEl = document.getElementById('userAvatar');
+
+        function updateNav() {
+            const raw = localStorage.getItem('user');
+            if (raw) {
+                const user = JSON.parse(raw);
+
+                // Show greeting
+                userNameEl.textContent = user.name?.split(' ')[0] || user.email;
+                if (user.picture) {
+                    userAvatarEl.src = user.picture;
+                    userAvatarEl.style.display = 'inline-block';
+                } else {
+                    userAvatarEl.style.display = 'none';
+                }
+                userGreeting.classList.add('visible');
+
+                // Switch to Sign Out
+                authBtn.textContent = 'Sign Out';
+                authBtn.classList.add('signout');
+                authBtn.removeAttribute('href');
+            } else {
+                // Not logged in — show Login link
+                userGreeting.classList.remove('visible');
+                authBtn.textContent = 'Login';
+                authBtn.classList.remove('signout');
+                authBtn.href = 'login.html';
+            }
+        }
+
+        function handleAuthClick(e) {
+            const raw = localStorage.getItem('user');
+            if (raw) {
+                // Signed in → sign out
+                e.preventDefault();
+                localStorage.removeItem('user');
+                updateNav();
+            }
+            // else: href="login.html" handles the navigation naturally
+        }
+
+        // Run on page load
+        updateNav();
+
+        function guardedNav(e, url, pageName) {
+            e.preventDefault();
+            if (localStorage.getItem('user')) {
+                window.location.href = url;
+            } else {
+                document.getElementById('popupMsg').textContent =
+                    `You need to be signed in to access the ${pageName} page.`;
+                document.getElementById('authOverlay').classList.add('show');
+            }
+        }
+
+        function closePopup() {
+            document.getElementById('authOverlay').classList.remove('show');
+        }
+
+        // Close on backdrop click
+        document.getElementById('authOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closePopup();
+        });
+    </script>
 </body>
+
 </html>

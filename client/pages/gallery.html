@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Site Photo Gallery</title>
+    <style>
+        .gallery {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+        }
+        .gallery img {
+            width: 200px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Site Photo Gallery</h2>
+
+    <h3>Before Work</h3>
+    <input type="file" accept="image/*" capture="environment" id="beforePhoto" multiple>
+    <br><br>
+    <div id="beforeGallery" class="gallery"></div>
+
+    <h3>After Work</h3>
+    <input type="file" accept="image/*" capture="environment" id="afterPhoto" multiple>
+    <br><br>
+    <div id="afterGallery" class="gallery"></div>
+
+    <p id="location">Checking location...</p>
+
+    <canvas id="canvas" style="display:none;"></canvas>
+
+    <button onclick="submitData()">Submit</button>
+
+    <script>
+        let latitude = "";
+        let longitude = "";
+        let locationAllowed = false;
+        let allImages = [];
+
+        window.onload = function () {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    latitude = pos.coords.latitude;
+                    longitude = pos.coords.longitude;
+                    locationAllowed = true;
+
+                    document.getElementById("location").innerText =
+                        "Location ✔ (" + latitude + ", " + longitude + ")";
+                },
+                () => {
+                    alert("Location required!");
+                }
+            );
+        };
+
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+
+        function processImage(file, galleryId) {
+            if (!locationAllowed) {
+                alert("Allow location!");
+                return;
+            }
+
+            const img = new Image();
+
+            img.onload = function () {
+                canvas.width = img.width;
+                canvas.height = img.height;
+
+                ctx.drawImage(img, 0, 0);
+
+                const now = new Date().toLocaleString();
+                const locationText = "Lat: " + latitude + " | Long: " + longitude;
+
+                ctx.font = "20px Arial";
+                ctx.fillStyle = "red";
+
+                ctx.fillText(locationText, 10, canvas.height - 40);
+                ctx.fillText(now, 10, canvas.height - 10);
+
+                const finalImage = canvas.toDataURL("image/png");
+
+                allImages.push(finalImage);
+
+                const imgEl = document.createElement("img");
+                imgEl.src = finalImage;
+
+                document.getElementById(galleryId).appendChild(imgEl);
+            };
+
+            img.src = URL.createObjectURL(file);
+        }
+
+        document.getElementById("beforePhoto").addEventListener("change", (e) => {
+            for (let file of e.target.files) {
+                processImage(file, "beforeGallery");
+            }
+        });
+
+        document.getElementById("afterPhoto").addEventListener("change", (e) => {
+            for (let file of e.target.files) {
+                processImage(file, "afterGallery");
+            }
+        });
+
+        async function submitData() {
+            try {
+                const res = await fetch('/upload', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ images: allImages })
+                });
+
+                if (res.ok) {
+                    window.location.href = "success.html";
+                } else {
+                    alert("Upload failed!");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Error submitting data");
+            }
+        }
+    </script>
+</body>
+</html>
