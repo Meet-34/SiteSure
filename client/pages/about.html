@@ -1,163 +1,177 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About — SiteSure</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-</head>
-<style>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About — SiteAudit</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <style>
     * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    html, body {
-        height: 100%;
-        overflow: hidden;
-        font-family: "Poppins", sans-serif;
-        color: white;
-  /* background: linear-gradient(135deg, #020617, #0f172a); */
-  /* background-image: url(../images/pexels-photo-28643802.webp); */
-
+    html,
+    body {
+      height: 100%;
+      overflow: hidden;
+      font-family: "Poppins", sans-serif;
+      color: white;
     }
 
-    /* body {
-    background-color: #020617; 
-} */
-    /* img.bg {
-        object-fit: cover;
-        width: 100%;
-        height: 100%;
-        position: fixed;
-        z-index: -1;
-        opacity: 65%;
-    } */
-
-img.bg {
-    object-fit: cover;
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    z-index: -1;
-
-    opacity: 0.45;           /* increase from 0.3 */
-    filter: brightness(0.7); /* increase from 0.4 */
-}
+    img.bg {
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      z-index: -1;
+    }
 
     /* NAV — identical to index.html */
     .header {
-        display: flex;
-        color: rgb(255, 173, 20);
-        padding: 15px;
-        justify-content: flex-end;
+      display: flex;
+      padding: 8px 20px;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #0028198d;
+      border: 2px solid #0028198d;
+      border-radius: 12px;
+      height: auto;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      margin: 8px;
+    }
+
+    /* Brand logo + name on the left */
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .brand-logo {
+      width: 41px;
+      height: 41px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(238, 237, 236, 0.425);
+      box-shadow: 0 0 10px #202b35;
+      flex-shrink: 0;
+      position: static;
+      opacity: 1;
+    }
+
+    .brand-name {
+      font-size: 24px;
+      font-weight: 700;
+      color: rgb(237, 236, 234);
+      letter-spacing: 1px;
+      text-shadow: 0px 2px 8px rgba(0, 0, 0, 0.7);
+      white-space: nowrap;
     }
 
     .nav {
-        display: flex;
-        gap: 50px;
+      display: flex;
+      gap: 50px;
+      align-items: center;
     }
 
     .nav a {
-        text-decoration: none;
-        color: white;
-        font-size: 22px;
-        font-weight: 500;
-        transition: scale 0.2s ease;
+      text-decoration: none;
+      color: white;
+      font-size: 20px;
+      font-weight: 500;
+      transition: scale 0.2s ease;
+      font-family: "Poppins", sans-serif;
     }
 
     .nav a:hover {
-        scale: 1.05;
-    }
-
-    .nav a.active {
-        color: rgb(255, 173, 20);
+      scale: 1.05;
     }
 
     /* MAIN CONTENT */
     .main {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: calc(100vh - 70px);
-        text-align: center;
-        padding: 0 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: calc(100vh - 70px);
+      text-align: center;
+      padding: 0 40px;
     }
 
     .main h1 {
-        font-size: 120px;
-        font-weight: 800;
-        line-height: 1;
-        /* text-shadow: 0px 4px 10px black; */
-        margin-bottom: 28px;
-        text-shadow: 0px 6px 20px rgba(0,0,0,0.8);
+      font-size: 60px;
+      font-weight: 800;
+      line-height: 1;
+      /* text-shadow: 0px 4px 10px black; */
+      margin-bottom: 18px;
+      text-shadow: 0px 6px 20px rgba(0, 0, 0, 0.8);
     }
 
-    /* Gold underline accent */
-    .main h1 span {
-        display: inline-block;
-        border-bottom: 5px solid rgb(255, 173, 20);
-        padding-bottom: 4px;
-    }
 
     .main p {
-        font-size: 18px;
-        font-weight: 400;
-        line-height: 1.9;
-        max-width: 780px;
-        color: rgba(255, 255, 255, 0.9);
-        text-shadow: 2px 2px 6px rgba(0,0,0,0.8);
-    }
-
-    /* Divider line */
-    .accent-line {
-        width: 60px;
-        height: 3px;
-        background: rgb(255, 173, 20);
-        margin: 0 auto 28px auto;
-        border-radius: 2px;
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 1.8;
+      max-width: 780px;
+      color: rgba(255, 255, 255, 0.9);
+      text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
     }
 
     .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
 
-    background: rgba(0, 0, 0, 0.55); /* adjust between 0.4–0.6 */
-    z-index: -1;
-}
+      background: rgba(0, 0, 0, 0.4); /* adjust between 0.4–0.6 */
+      z-index: -1;
+    }
 
-.subtitle {
-    color: rgb(255, 173, 20);
-    margin-bottom: 15px;
-    font-size: 18px;
-    letter-spacing: 1px;
-}
-</style>
-<body>
-    <img class="bg" src="../images/back1.jpg" alt="">
-<div class="overlay"></div>
+    .subtitle {
+      margin-bottom: 22px;
+      font-size: 22px;
+      letter-spacing: 1px;
+    }
+  </style>
+  <body>
+    <img class="bg" src="../images/site2.avif" alt="" />
+    <div class="overlay"></div>
     <div class="header">
-        <div class="nav">
-            <a href="index.html">Home</a>
-            <a href="materiallog.html">Logs</a>
-            <a href="gallery.html">Gallery</a>
-            <a href="about.html" class="active">About</a>
-            <a href="login.html">Login</a>
-        </div>
+      <a href="index.html" class="brand">
+        <img class="brand-logo" src="../images/logo3.jpg" />
+        <span class="brand-name">SiteAudit</span>
+      </a>
+      <div class="nav">
+        <a href="index.html">Home</a>
+        <a href="materiallog.html">Logs</a>
+        <a href="gallery.html">Reports</a>
+        <a href="about.html" class="active">About</a>
+        <a href="login.html">Login</a>
+      </div>
     </div>
 
     <div class="main">
-        <h1><span>About Us</span></h1>
-        <p class="subtitle">Precision • Transparency • Trust</p>
-        <div class="accent-line"></div>
-        <p>At our core, we are committed to raising the standard of construction through reliable and transparent quality assurance. We help builders, developers, and homeowners ensure that every stage of their project meets strict safety and durability benchmarks. By combining technical expertise with a detail-oriented approach, we identify risks early, prevent costly mistakes, and deliver confidence in every structure. Our goal is simple — to make quality not just a requirement, but a guarantee.</p>
+      <h1><span>About Us</span></h1>
+      <p class="subtitle">Precision • Transparency • Trust</p>
+      <p>
+        At SiteAudit, we bring precision and accountability to construction
+        quality assurance through consistent monitoring and structured
+        reporting. Our goal is to help teams identify risks early, prevent
+        costly errors, and ensure every stage of construction meets high
+        standards of safety and durability. We believe quality is not a one-time
+        check, but a continuous process you can rely on.
+      </p>
     </div>
-</body>
+  </body>
 </html>

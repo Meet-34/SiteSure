@@ -1,527 +1,654 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login — SiteSure</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login — SiteAudit</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Poppins", sans-serif;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
 
-        html, body {
-            height: 100%;
-            overflow: hidden;
-            background-color: black;
-            color: white;
-            display: flex;
-            flex-direction: column;
-        }
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+        background-color: black;
+        color: white;
+        display: flex;
+        flex-direction: column;
+      }
 
-        /* Background image — same as index.html */
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            background: url('../images/back1.jpg') center/cover no-repeat;
-            opacity: 0.65;
-            z-index: 0;
-        }
+      /* Background image — same as index.html */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: url("../images/site2.avif") center/cover no-repeat;
+        opacity: 0.65;
+        z-index: 0;
+      }
 
-        /* NAV — identical to index.html */
-        .header {
-            position: relative;
-            z-index: 10;
-            display: flex;
-            color: rgb(255, 173, 20);
-            padding: 15px;
-            justify-content: flex-end;
-        }
+      /* NAV — identical to index.html */
+      .header {
+        display: flex;
+        color: rgb(255, 173, 20);
+        padding: 8px 20px;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #0028198d;
+        border: 2px solid #0028198d;
+        border-radius: 12px;
+        /* border-bottom: 1px solid #ccc; */
+        height: auto;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(8px);
+        margin: 8px;
+      }
 
-        .nav {
-            display: flex;
-            gap: 50px;
-        }
+      /* Brand logo + name on the left */
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+      }
 
-        .nav a {
-            text-decoration: none;
-            color: white;
-            font-size: 22px;
-            font-weight: 500;
-            transition: scale 0.2s ease;
-        }
+      .brand-logo {
+        width: 41px;
+        height: 41px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid rgba(238, 237, 236, 0.425);
+        box-shadow: 0 0 10px #202b35;
+        flex-shrink: 0;
+        position: static;
+        opacity: 1;
+      }
 
-        .nav a:hover {
-            scale: 1.05;
-        }
+      .brand-name {
+        font-size: 24px;
+        font-weight: 700;
+        color: rgb(237, 236, 234);
+        letter-spacing: 1px;
+        text-shadow: 0px 2px 8px rgba(0, 0, 0, 0.7);
+        white-space: nowrap;
+      }
 
-        .nav a.active {
-            color: rgb(255, 173, 20);
-        }
+      .nav {
+        display: flex;
+        gap: 50px;
+        align-items: center;
+      }
 
-        /* PAGE BODY */
-        .page-body {
-            position: relative;
-            z-index: 10;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            overflow: hidden;
-        }
+      .nav a {
+        text-decoration: none;
+        color: white;
+        font-size: 20px;
+        font-weight: 500;
+        transition: scale 0.2s ease;
+        font-family: "Poppins", sans-serif;
+      }
 
-        .brand-title {
-            font-size: 52px;
-            font-weight: 700;
-            text-shadow: 0px 4px 10px black;
-            margin-bottom: 4px;
-            letter-spacing: -1px;
-        }
+      .nav a:hover {
+        scale: 1.05;
+      }
 
-        .brand-sub {
-            font-size: 13px;
-            color: rgba(255,255,255,0.55);
-            margin-bottom: 20px;
-            text-align: center;
-        }
+      /* PAGE BODY */
+      .page-body {
+        position: relative;
+        z-index: 10;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        overflow: hidden;
+      }
 
-        /* CARD */
-        .login-card {
-            background: rgba(0, 0, 0, 0.55);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border-radius: 16px;
-            padding: 28px 32px;
-            width: 100%;
-            max-width: 420px;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.5);
-        }
+      .brand-title {
+        font-size: 48px;
+        font-weight: 700;
+        text-shadow: 0px 4px 10px black;
+        margin-bottom: 4px;
+        letter-spacing: -1px;
+      }
 
-        .card-title {
-            font-size: 22px;
-            font-weight: 600;
-            margin-bottom: 6px;
-            text-align: center;
-        }
+      /* CARD */
+      .login-card {
+        background: rgba(0, 0, 0, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-radius: 16px;
+        padding: 28px 32px;
+        width: 100%;
+        max-width: 420px;
+        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+      }
 
-        .card-sub {
-            font-size: 13px;
-            color: rgba(255,255,255,0.5);
-            text-align: center;
-            margin-bottom: 28px;
-        }
+      .card-title {
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 6px;
+        text-align: center;
+      }
 
-        /* GOOGLE BTN */
-        .google-btn {
-            width: 100%;
-            padding: 11px;
-            background: white;
-            border: none;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            cursor: pointer;
-            transition: opacity 0.2s, transform 0.15s;
-            font-family: "Poppins", sans-serif;
-            font-size: 15px;
-            font-weight: 500;
-            color: #333;
-        }
+      .card-sub {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.5);
+        text-align: center;
+        margin-bottom: 28px;
+      }
 
-        .google-btn:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-        }
+      /* GOOGLE BTN */
+      .google-btn {
+        width: 100%;
+        padding: 11px;
+        background: white;
+        border: none;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        cursor: pointer;
+        transition:
+          opacity 0.2s,
+          transform 0.15s;
+        font-family: "Poppins", sans-serif;
+        font-size: 15px;
+        font-weight: 500;
+        color: #333;
+      }
 
-        .google-btn:active {
-            transform: translateY(0);
-        }
+      .google-btn:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+      }
 
-        .google-btn img {
-            width: 20px;
-            height: 20px;
-        }
+      .google-btn:active {
+        transform: translateY(0);
+      }
 
-        /* DIVIDER */
-        .divider {
-            display: flex;
-            align-items: center;
-            margin: 16px 0;
-            gap: 12px;
-        }
+      .google-btn img {
+        width: 20px;
+        height: 20px;
+      }
 
-        .divider::before,
-        .divider::after {
-            content: "";
-            flex: 1;
-            height: 1px;
-            background: rgba(255,255,255,0.2);
-        }
+      /* DIVIDER */
+      .divider {
+        display: flex;
+        align-items: center;
+        margin: 16px 0;
+        gap: 12px;
+      }
 
-        .divider span {
-            color: rgba(255,255,255,0.45);
-            font-size: 12px;
-            white-space: nowrap;
-        }
+      .divider::before,
+      .divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.2);
+      }
 
-        /* FORM */
-        .form-group {
-            margin-bottom: 12px;
-        }
+      .divider span {
+        color: rgba(255, 255, 255, 0.45);
+        font-size: 12px;
+        white-space: nowrap;
+      }
 
-        .form-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 500;
-            color: rgba(255,255,255,0.75);
-            margin-bottom: 6px;
-        }
+      /* FORM */
+      .form-group {
+        margin-bottom: 12px;
+      }
 
-        .form-group input {
-            width: 100%;
-            padding: 11px 14px;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 8px;
-            font-size: 14px;
-            color: white;
-            font-family: "Poppins", sans-serif;
-            transition: border-color 0.2s, background 0.2s;
-        }
+      .form-group label {
+        display: block;
+        font-size: 13px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.75);
+        margin-bottom: 6px;
+      }
 
-        .form-group input::placeholder {
-            color: rgba(255,255,255,0.3);
-        }
+      .form-group input {
+        width: 100%;
+        padding: 11px 14px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        font-size: 14px;
+        color: white;
+        font-family: "Poppins", sans-serif;
+        transition:
+          border-color 0.2s,
+          background 0.2s;
+      }
 
-        .form-group input:focus {
-            outline: none;
-            border-color: rgb(255, 173, 20);
-            background: rgba(255,255,255,0.12);
-        }
+      .form-group input::placeholder {
+        color: rgba(255, 255, 255, 0.3);
+      }
 
-        .error-message {
-            color: #ff6b6b;
-            font-size: 12px;
-            margin-top: 5px;
-            display: none;
-        }
+      .form-group input:focus {
+        outline: none;
+        border-color: rgb(255, 173, 20);
+        background: rgba(255, 255, 255, 0.12);
+      }
 
-        /* SUBMIT BTN */
-        .submit-btn {
-            width: 100%;
-            padding: 12px;
-            background: rgb(255, 173, 20);
-            color: black;
-            border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 700;
-            font-family: "Poppins", sans-serif;
-            cursor: pointer;
-            transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
-            margin-top: 4px;
-            box-shadow: 0 2px 12px rgba(255,173,20,0.3);
-        }
+      .error-message {
+        color: #ff6b6b;
+        font-size: 12px;
+        margin-top: 5px;
+        display: none;
+      }
 
-        .submit-btn:hover {
-            opacity: 0.92;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 20px rgba(255,173,20,0.45);
-        }
+      /* SUBMIT BTN */
+      .submit-btn {
+        width: 100%;
+        padding: 12px;
+        background: rgb(255, 173, 20);
+        color: black;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 700;
+        font-family: "Poppins", sans-serif;
+        cursor: pointer;
+        transition:
+          opacity 0.2s,
+          transform 0.15s,
+          box-shadow 0.2s;
+        margin-top: 4px;
+        box-shadow: 0 2px 12px rgba(255, 173, 20, 0.3);
+      }
 
-        .submit-btn:active {
-            transform: translateY(0);
-        }
+      .submit-btn:hover {
+        opacity: 0.92;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 20px rgba(255, 173, 20, 0.45);
+      }
 
-        .toggle-text {
-            text-align: center;
-            color: rgba(255,255,255,0.5);
-            font-size: 13px;
-            margin-top: 12px;
-        }
+      .submit-btn:active {
+        transform: translateY(0);
+      }
 
-        .toggle-text span {
-            color: rgb(255, 173, 20);
-            cursor: pointer;
-            font-weight: 500;
-        }
+      .toggle-text {
+        text-align: center;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 13px;
+        margin-top: 12px;
+      }
 
-        .toggle-text span:hover {
-            text-decoration: underline;
-        }
+      .toggle-text span {
+        color: rgb(255, 173, 20);
+        cursor: pointer;
+        font-weight: 500;
+      }
 
-        /* Hidden Google button container */
-        #googleBtnHidden {
-            position: absolute;
-            opacity: 0;
-            pointer-events: none;
-            width: 1px;
-            height: 1px;
-            overflow: hidden;
-        }
+      .toggle-text span:hover {
+        text-decoration: underline;
+      }
 
-        /* Section toggle */
-        #signupSection { display: none; }
+      /* Hidden Google button container */
+      #googleBtnHidden {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+      }
 
-        /* Loading state */
-        .submit-btn.loading {
-            opacity: 0.7;
-            pointer-events: none;
-        }
+      /* Section toggle */
+      #signupSection {
+        display: none;
+      }
 
-        .submit-btn.loading::after {
-            content: " ⏳";
-        }
+      /* Loading state */
+      .submit-btn.loading {
+        opacity: 0.7;
+        pointer-events: none;
+      }
+
+      .submit-btn.loading::after {
+        content: " ⏳";
+      }
     </style>
-</head>
+  </head>
 
-<body>
-
+  <body>
     <!-- Google Identity Services -->
-    <div id="g_id_onload"
-        data-client_id="82437052421-kjq975eosuvd61q4ldkf5t5mfrmbcm73.apps.googleusercontent.com"
-        data-callback="handleGoogleCredentialResponse"
-        data-auto_prompt="false">
-    </div>
+    <div
+      id="g_id_onload"
+      data-client_id="82437052421-kjq975eosuvd61q4ldkf5t5mfrmbcm73.apps.googleusercontent.com"
+      data-callback="handleGoogleCredentialResponse"
+      data-auto_prompt="false"
+    ></div>
 
     <!-- NAV — same as index.html -->
     <div class="header">
-        <div class="nav">
-            <a href="index.html">Home</a>
-            <a href="materiallog.html">Logs</a>
-            <a href="gallery.html">Gallery</a>
-            <a href="about.html">About</a>
-            <a href="login.html" class="active">Login</a>
-        </div>
+      <a href="index.html" class="brand">
+        <img class="brand-logo" src="../images/logo3.jpg" />
+        <span class="brand-name">SiteAudit</span>
+      </a>
+
+      <div class="nav">
+        <a href="index.html">Home</a>
+        <a href="materiallog.html">Logs</a>
+        <a href="gallery.html">Reports</a>
+        <a href="about.html">About</a>
+        <a href="login.html" class="active">Login</a>
+      </div>
     </div>
 
     <div class="page-body">
-        <div class="brand-title">SiteSure</div>
-        <div class="brand-sub">Building trust through precision</div>
+      <div class="brand-title">SiteAudit</div>
 
-        <div class="login-card">
-            <div class="card-title" id="cardTitle">Welcome Back</div>
-            <div class="card-sub" id="cardSub">Sign in to your account to continue</div>
-
-            <!-- Google Sign In — real rendered button -->
-            <div style="display:flex; justify-content:center;">
-                <div class="g_id_signin"
-                    data-type="standard"
-                    data-size="large"
-                    data-theme="outline"
-                    data-text="continue_with"
-                    data-shape="rectangular"
-                    data-width="356">
-                </div>
-            </div>
-
-            <div class="divider"><span>or continue with email</span></div>
-
-            <!-- LOGIN SECTION -->
-            <div id="loginSection">
-                <div class="form-group">
-                    <label for="loginEmail">Email</label>
-                    <input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email">
-                    <div class="error-message" id="loginEmailError"></div>
-                </div>
-                <div class="form-group">
-                    <label for="loginPassword">Password</label>
-                    <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password"
-                        onkeydown="if(event.key==='Enter') handleEmailLogin()">
-                    <div class="error-message" id="loginPasswordError"></div>
-                </div>
-                <button class="submit-btn" id="loginBtn" onclick="handleEmailLogin()">Log In</button>
-                <p class="toggle-text">Don't have an account? <span onclick="showSignup()">Sign up</span></p>
-            </div>
-
-            <!-- SIGNUP SECTION -->
-            <div id="signupSection">
-                <div class="form-group">
-                    <label for="signupName">Full Name</label>
-                    <input type="text" id="signupName" placeholder="John Doe" autocomplete="name">
-                    <div class="error-message" id="signupNameError"></div>
-                </div>
-                <div class="form-group">
-                    <label for="signupEmail">Email</label>
-                    <input type="email" id="signupEmail" placeholder="you@example.com" autocomplete="email">
-                    <div class="error-message" id="signupEmailError"></div>
-                </div>
-                <div class="form-group">
-                    <label for="signupPassword">Password</label>
-                    <input type="password" id="signupPassword" placeholder="Min. 6 characters" autocomplete="new-password"
-                        onkeydown="if(event.key==='Enter') handleSignup()">
-                    <div class="error-message" id="signupPasswordError"></div>
-                </div>
-                <button class="submit-btn" id="signupBtn" onclick="handleSignup()">Create Account</button>
-                <p class="toggle-text">Already have an account? <span onclick="showLogin()">Log in</span></p>
-            </div>
+      <div class="login-card">
+        <div class="card-title" id="cardTitle">Welcome Back</div>
+        <div class="card-sub" id="cardSub">
+          Sign in to your account to continue
         </div>
+
+        <!-- Google Sign In — real rendered button -->
+        <div style="display: flex; justify-content: center">
+          <div
+            class="g_id_signin"
+            data-type="standard"
+            data-size="large"
+            data-theme="outline"
+            data-text="continue_with"
+            data-shape="rectangular"
+            data-width="356"
+          ></div>
+        </div>
+
+        <div class="divider"><span>or continue with email</span></div>
+
+        <!-- LOGIN SECTION -->
+        <div id="loginSection">
+          <div class="form-group">
+            <label for="loginEmail">Email</label>
+            <input
+              type="email"
+              id="loginEmail"
+              placeholder="you@example.com"
+              autocomplete="email"
+            />
+            <div class="error-message" id="loginEmailError"></div>
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input
+              type="password"
+              id="loginPassword"
+              placeholder="••••••••"
+              autocomplete="current-password"
+              onkeydown="if (event.key === 'Enter') handleEmailLogin();"
+            />
+            <div class="error-message" id="loginPasswordError"></div>
+          </div>
+          <button class="submit-btn" id="loginBtn" onclick="handleEmailLogin()">
+            Log In
+          </button>
+          <p class="toggle-text">
+            Don't have an account? <span onclick="showSignup()">Sign up</span>
+          </p>
+        </div>
+
+        <!-- SIGNUP SECTION -->
+        <div id="signupSection">
+          <div class="form-group">
+            <label for="signupName">Full Name</label>
+            <input
+              type="text"
+              id="signupName"
+              placeholder="John Doe"
+              autocomplete="name"
+            />
+            <div class="error-message" id="signupNameError"></div>
+          </div>
+          <div class="form-group">
+            <label for="signupEmail">Email</label>
+            <input
+              type="email"
+              id="signupEmail"
+              placeholder="you@example.com"
+              autocomplete="email"
+            />
+            <div class="error-message" id="signupEmailError"></div>
+          </div>
+          <div class="form-group">
+            <label for="signupPassword">Password</label>
+            <input
+              type="password"
+              id="signupPassword"
+              placeholder="Min. 6 characters"
+              autocomplete="new-password"
+              onkeydown="if (event.key === 'Enter') handleSignup();"
+            />
+            <div class="error-message" id="signupPasswordError"></div>
+          </div>
+          <button class="submit-btn" id="signupBtn" onclick="handleSignup()">
+            Create Account
+          </button>
+          <p class="toggle-text">
+            Already have an account? <span onclick="showLogin()">Log in</span>
+          </p>
+        </div>
+      </div>
     </div>
 
     <script>
-        // Redirect if already logged in
-        if (localStorage.getItem('user')) {
-            window.location.href = 'index.html';
+      // Redirect if already logged in
+      if (localStorage.getItem("user")) {
+        window.location.href = "index.html";
+      }
+
+      // ─── Google Sign-In ───────────────────────────────────────────────
+
+      function handleGoogleCredentialResponse(response) {
+        try {
+          const idToken = response.credential;
+          // Decode JWT payload (base64url)
+          const base64Url = idToken.split(".")[1];
+          const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+          const payload = JSON.parse(window.atob(base64));
+
+          localStorage.setItem(
+            "user",
+            JSON.stringify({
+              name: payload.name,
+              email: payload.email,
+              picture: payload.picture,
+              provider: "google",
+            }),
+          );
+
+          window.location.href = "index.html";
+        } catch (err) {
+          showGlobalError("Google sign-in failed. Please try again.");
+          console.error("Google credential error:", err);
         }
+      }
 
-        // ─── Google Sign-In ───────────────────────────────────────────────
+      // ─── Email Login ──────────────────────────────────────────────────
 
-        function handleGoogleCredentialResponse(response) {
-            try {
-                const idToken = response.credential;
-                // Decode JWT payload (base64url)
-                const base64Url = idToken.split('.')[1];
-                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-                const payload = JSON.parse(window.atob(base64));
+      async function handleEmailLogin() {
+        const email = document.getElementById("loginEmail").value.trim();
+        const password = document.getElementById("loginPassword").value;
+        clearErrors(["loginEmailError", "loginPasswordError"]);
 
-                localStorage.setItem('user', JSON.stringify({
-                    name: payload.name,
-                    email: payload.email,
-                    picture: payload.picture,
-                    provider: 'google'
-                }));
-
-                window.location.href = 'index.html';
-            } catch (err) {
-                showGlobalError('Google sign-in failed. Please try again.');
-                console.error('Google credential error:', err);
-            }
+        let hasError = false;
+        if (!isValidEmail(email)) {
+          showError("loginEmailError", "Please enter a valid email");
+          hasError = true;
         }
-
-        // ─── Email Login ──────────────────────────────────────────────────
-
-        async function handleEmailLogin() {
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            clearErrors(['loginEmailError', 'loginPasswordError']);
-
-            let hasError = false;
-            if (!isValidEmail(email)) { showError('loginEmailError', 'Please enter a valid email'); hasError = true; }
-            if (password.length < 6) { showError('loginPasswordError', 'Password must be at least 6 characters'); hasError = true; }
-            if (hasError) return;
-
-            setLoading('loginBtn', true);
-            try {
-                const res = await fetch('/api/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
-                const data = await res.json();
-
-                if (res.ok) {
-                    localStorage.setItem('user', JSON.stringify({
-                        name: data.name,
-                        email: data.email,
-                        provider: 'email'
-                    }));
-                    window.location.href = 'index.html';
-                } else {
-                    showError('loginPasswordError', data.message || 'Invalid credentials');
-                }
-            } catch (err) {
-                showError('loginPasswordError', 'Server error. Please try again.');
-            } finally {
-                setLoading('loginBtn', false);
-            }
+        if (password.length < 6) {
+          showError(
+            "loginPasswordError",
+            "Password must be at least 6 characters",
+          );
+          hasError = true;
         }
+        if (hasError) return;
 
-        // ─── Email Signup ─────────────────────────────────────────────────
+        setLoading("loginBtn", true);
+        try {
+          const res = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          });
+          const data = await res.json();
 
-        async function handleSignup() {
-            const name = document.getElementById('signupName').value.trim();
-            const email = document.getElementById('signupEmail').value.trim();
-            const password = document.getElementById('signupPassword').value;
-            clearErrors(['signupNameError', 'signupEmailError', 'signupPasswordError']);
-
-            let hasError = false;
-            if (name.length < 2) { showError('signupNameError', 'Please enter your full name'); hasError = true; }
-            if (!isValidEmail(email)) { showError('signupEmailError', 'Please enter a valid email'); hasError = true; }
-            if (password.length < 6) { showError('signupPasswordError', 'Password must be at least 6 characters'); hasError = true; }
-            if (hasError) return;
-
-            setLoading('signupBtn', true);
-            try {
-                const res = await fetch('/api/auth/signup', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, email, password })
-                });
-                const data = await res.json();
-
-                if (res.ok) {
-                    localStorage.setItem('user', JSON.stringify({
-                        name: data.name,
-                        email: data.email,
-                        provider: 'email'
-                    }));
-                    window.location.href = 'index.html';
-                } else {
-                    showError('signupEmailError', data.message || 'Signup failed. Try again.');
-                }
-            } catch (err) {
-                showError('signupEmailError', 'Server error. Please try again.');
-            } finally {
-                setLoading('signupBtn', false);
-            }
+          if (res.ok) {
+            localStorage.setItem(
+              "user",
+              JSON.stringify({
+                name: data.name,
+                email: data.email,
+                provider: "email",
+              }),
+            );
+            window.location.href = "index.html";
+          } else {
+            showError(
+              "loginPasswordError",
+              data.message || "Invalid credentials",
+            );
+          }
+        } catch (err) {
+          showError("loginPasswordError", "Server error. Please try again.");
+        } finally {
+          setLoading("loginBtn", false);
         }
+      }
 
-        // ─── UI Helpers ───────────────────────────────────────────────────
+      // ─── Email Signup ─────────────────────────────────────────────────
 
-        function showSignup() {
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('signupSection').style.display = 'block';
-            document.getElementById('cardTitle').textContent = 'Create Account';
-            document.getElementById('cardSub').textContent = 'Join SiteSure today';
+      async function handleSignup() {
+        const name = document.getElementById("signupName").value.trim();
+        const email = document.getElementById("signupEmail").value.trim();
+        const password = document.getElementById("signupPassword").value;
+        clearErrors([
+          "signupNameError",
+          "signupEmailError",
+          "signupPasswordError",
+        ]);
+
+        let hasError = false;
+        if (name.length < 2) {
+          showError("signupNameError", "Please enter your full name");
+          hasError = true;
         }
-
-        function showLogin() {
-            document.getElementById('signupSection').style.display = 'none';
-            document.getElementById('loginSection').style.display = 'block';
-            document.getElementById('cardTitle').textContent = 'Welcome Back';
-            document.getElementById('cardSub').textContent = 'Sign in to your account to continue';
+        if (!isValidEmail(email)) {
+          showError("signupEmailError", "Please enter a valid email");
+          hasError = true;
         }
-
-        function isValidEmail(email) {
-            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        if (password.length < 6) {
+          showError(
+            "signupPasswordError",
+            "Password must be at least 6 characters",
+          );
+          hasError = true;
         }
+        if (hasError) return;
 
-        function showError(id, msg) {
-            const el = document.getElementById(id);
-            if (el) { el.textContent = msg; el.style.display = 'block'; }
-        }
+        setLoading("signupBtn", true);
+        try {
+          const res = await fetch("/api/auth/signup", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, email, password }),
+          });
+          const data = await res.json();
 
-        function clearErrors(ids) {
-            ids.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) { el.textContent = ''; el.style.display = 'none'; }
-            });
+          if (res.ok) {
+            localStorage.setItem(
+              "user",
+              JSON.stringify({
+                name: data.name,
+                email: data.email,
+                provider: "email",
+              }),
+            );
+            window.location.href = "index.html";
+          } else {
+            showError(
+              "signupEmailError",
+              data.message || "Signup failed. Try again.",
+            );
+          }
+        } catch (err) {
+          showError("signupEmailError", "Server error. Please try again.");
+        } finally {
+          setLoading("signupBtn", false);
         }
+      }
 
-        function setLoading(btnId, state) {
-            const btn = document.getElementById(btnId);
-            if (btn) btn.classList.toggle('loading', state);
-        }
+      // ─── UI Helpers ───────────────────────────────────────────────────
 
-        function showGlobalError(msg) {
-            const active = document.getElementById('loginSection').style.display !== 'none'
-                ? 'loginPasswordError' : 'signupEmailError';
-            showError(active, msg);
+      function showSignup() {
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("signupSection").style.display = "block";
+        document.getElementById("cardTitle").textContent = "Create Account";
+        document.getElementById("cardSub").textContent = "Join SiteSure today";
+      }
+
+      function showLogin() {
+        document.getElementById("signupSection").style.display = "none";
+        document.getElementById("loginSection").style.display = "block";
+        document.getElementById("cardTitle").textContent = "Welcome Back";
+        document.getElementById("cardSub").textContent =
+          "Sign in to your account to continue";
+      }
+
+      function isValidEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      }
+
+      function showError(id, msg) {
+        const el = document.getElementById(id);
+        if (el) {
+          el.textContent = msg;
+          el.style.display = "block";
         }
+      }
+
+      function clearErrors(ids) {
+        ids.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) {
+            el.textContent = "";
+            el.style.display = "none";
+          }
+        });
+      }
+
+      function setLoading(btnId, state) {
+        const btn = document.getElementById(btnId);
+        if (btn) btn.classList.toggle("loading", state);
+      }
+
+      function showGlobalError(msg) {
+        const active =
+          document.getElementById("loginSection").style.display !== "none"
+            ? "loginPasswordError"
+            : "signupEmailError";
+        showError(active, msg);
+      }
     </script>
-</body>
-
+  </body>
 </html>
