@@ -235,6 +235,25 @@ app.post("/use", async (req, res) => {
 });
 
 
+// DELETE a report by id
+app.delete("/api/reports/:id", async (req, res) => {
+    try {
+        const report = await Report.findByIdAndDelete(req.params.id);
+        if (!report) return res.status(404).json({ error: "Report not found" });
+
+        // Also delete the image file if it exists
+        if (report.image) {
+            const imgPath = path.join(uploadsDir, report.image);
+            if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
+        }
+
+        res.json({ message: "Report deleted successfully" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to delete report" });
+    }
+});
+
 // ── API: Auth ─────────────────────────────────────────────────────────────────
 
 // POST signup

@@ -23,6 +23,7 @@
     body {
       font-family: "Poppins", sans-serif;
       color: white;
+      background-color: black;
       min-height: 100vh;
       overflow-x: hidden;
     }
@@ -34,21 +35,9 @@
       width: 100vw;
       height: 100vh;
       object-fit: cover;
-      z-index: -1;
-      opacity: 0.65;
+      z-index: -2;
+      opacity: 0.55;
     }
-
-    .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-
-    background: rgba(0, 0, 0, 0.65);
-    z-index: -1;
-  }
-
 
     /* ── HEADER ── */
     .header {
@@ -623,11 +612,34 @@
       color: rgba(255, 255, 255, 0.3);
       font-size: 14px;
     }
+
+    /* ── DELETE BUTTON ── */
+    .delete-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: rgba(255, 255, 255, 0.25);
+      padding: 2px 4px;
+      border-radius: 6px;
+      font-size: 15px;
+      line-height: 1;
+      transition:
+        color 0.2s,
+        background 0.2s;
+      flex-shrink: 0;
+    }
+    .delete-btn:hover {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.12);
+    }
+    .delete-btn.deleting {
+      pointer-events: none;
+      opacity: 0.4;
+    }
   </style>
 
   <body>
     <img class="bg" src="../images/site2.avif" alt="" />
-    <div class="overlay"></div>
 
     <!-- Auth popup -->
     <div class="auth-overlay" id="authOverlay">
@@ -982,7 +994,10 @@
             <div class="report-card">
               <div class="report-card-header">
                 <div class="location">${esc(r.location)}</div>
-                <span class="work-type-badge ${badgeClass}">${esc(r.workType)}</span>
+                <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+                  <span class="work-type-badge ${badgeClass}">${esc(r.workType)}</span>
+                  <button class="delete-btn" title="Delete report" onclick="deleteReport('${r._id}', this)">🗑️</button>
+                </div>
               </div>
               <div class="report-meta">📅 ${esc(r.date)}</div>
               <div class="report-row"><span>Description</span>${esc(r.description)}</div>
@@ -1007,6 +1022,38 @@
           .replace(/</g, "&lt;")
           .replace(/>/g, "&gt;")
           .replace(/"/g, "&quot;");
+      }
+
+      // ── DELETE REPORT ─────────────────────────────────────────────────────────
+      async function deleteReport(id, btn) {
+        if (!confirm("Delete this report? This cannot be undone.")) return;
+        btn.classList.add("deleting");
+        try {
+          const res = await fetch("/api/reports/" + id, { method: "DELETE" });
+          if (res.ok) {
+            const card = btn.closest(".report-card");
+            card.style.transition = "opacity 0.3s, transform 0.3s";
+            card.style.opacity = "0";
+            card.style.transform = "scale(0.95)";
+            setTimeout(() => {
+              card.remove();
+              updateCount();
+            }, 300);
+          } else {
+            const err = await res.json();
+            alert("Could not delete: " + (err.error || "Unknown error"));
+            btn.classList.remove("deleting");
+          }
+        } catch (err) {
+          alert("Network error. Please try again.");
+          btn.classList.remove("deleting");
+        }
+      }
+
+      function updateCount() {
+        const remaining = document.querySelectorAll(".report-card").length;
+        document.getElementById("reportCount").textContent =
+          remaining + " report" + (remaining !== 1 ? "s" : "");
       }
     </script>
   </body>
