@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Material Tracker Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<style>
+  /* ── Base ─────────────────────────────────────────────── */
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #142a44;
+    /* 🔵 lighter navy */
+    color: #f5faff;
+    margin: 0;
+    padding: 20px 0 40px;
+  }
+
+  .container {
+    width: 82%;
+    margin: auto;
+    text-align: center;
+  }
+
+  h1 {
+    color: #ffffff;
+    margin-bottom: 4px;
+  }
+
+  h3 {
+    color: #dbeafe;
+  }
+
+  .subtitle {
+    color: #8aa4c8;
+    margin-bottom: 20px;
+  }
+
+  /* ── Cards ────────────────────────────────────────────── */
+  .cards {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .card {
+    flex: 1;
+    margin: 8px;
+    padding: 15px;
+    border-radius: 10px;
+    background: #1c3555;
+    /* 🔵 lighter */
+    color: #f5faff;
+    font-weight: bold;
+    border: 1px solid #2b4d73;
+  }
+
+  .warning {
+    background: #2d2a00;
+    border-color: #665c00;
+  }
+
+  .success {
+    background: #0f2d24;
+    border-color: #1f5c4a;
+  }
+
+  .info {
+    background: #0d2d52;
+    border-color: #1f4f8f;
+  }
+
+  /* ── Chart ────────────────────────────────────────────── */
+  .chart-box {
+    background: #1c3555;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    height: 350px;
+    position: relative;
+    border: 1px solid #2b4d73;
+
+    .chart-box {
+      padding: 20px 20px 40px 20px;
+      /* extra bottom space */
+    }
+  }
+
+  /* ── Insights + Alerts ────────────────────────────────── */
+  .grid {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .box {
+    flex: 1;
+    min-width: 200px;
+    background: #1c3555;
+    padding: 16px;
+    border-radius: 12px;
+    text-align: left;
+    border: 1px solid #2b4d73;
+  }
+
+  .box ul {
+    margin: 0;
+    padding-left: 18px;
+    color: #cbdaf0;
+  }
+
+  .box li {
+    margin-bottom: 6px;
+  }
+
+  /* ── Input Box ────────────────────────────────────────── */
+  .input-box {
+    background: #1c3555;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    border: 1px solid #2b4d73;
+  }
+
+  input,
+  select {
+    padding: 10px;
+    margin: 6px;
+    border: 1px solid #2b4d73;
+    border-radius: 6px;
+    background: #18324f;
+    /* 🔵 lighter input */
+    color: #f5faff;
+    font-size: 14px;
+  }
+
+  input::placeholder {
+    color: #7f9bbd;
+  }
+
+  /* ── Buttons ─────────────────────────────────────────── */
+  button {
+    padding: 10px 18px;
+    background: #ffffff;
+    color: #142a44;
+    border: 1px solid #dbeafe;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 4px;
+  }
+
+  button:hover {
+    background: #e6eefc;
+  }
+
+  .btn-use {
+    background: #ffe5e5;
+    border-color: #ffb3b3;
+  }
+
+  .btn-use:hover {
+    background: #ffcccc;
+  }
+
+  .btn-clear {
+    background: #1c3555;
+    color: #fff;
+    border-color: #2b4d73;
+  }
+
+  .btn-clear:hover {
+    background: #24466b;
+  }
+
+  /* ── History & Summary ────────────────────────────────── */
+  .history-box {
+    background: #1c3555;
+    padding: 20px;
+    margin-bottom: 24px;
+    border-radius: 12px;
+    text-align: left;
+    border: 1px solid #2b4d73;
+  }
+
+  .history-box table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+  }
+
+  .history-box th {
+    background: #10263d;
+    /* 🔵 slightly lighter */
+    color: #f5faff;
+    padding: 10px;
+    text-align: left;
+    border-bottom: 2px solid #2b4d73;
+  }
+
+  .history-box td {
+    padding: 10px;
+    border-bottom: 1px solid #2b4d73;
+    font-size: 14px;
+    color: #cbdaf0;
+  }
+
+  .row-added {
+    background: #0f2d24;
+  }
+
+  .row-used {
+    background: #2a1414;
+  }
+
+  /* ── Badges ─────────────────────────────────────────── */
+  .badge {
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .badge-added {
+    background: #1f5c4a;
+    color: #81c784;
+  }
+
+  .badge-used {
+    background: #5a1f1f;
+    color: #e57373;
+  }
+
+  .col-added {
+    color: #81c784;
+    font-weight: bold;
+  }
+
+  .col-used {
+    color: #e57373;
+    font-weight: bold;
+  }
+
+  /* ── Filters ─────────────────────────────────────────── */
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .filters input[type="text"] {
+    min-width: 180px;
+  }
+
+  .filters label {
+    font-size: 14px;
+    color: #8aa4c8;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .filter-count {
+    font-size: 13px;
+    color: #7f9bbd;
+    margin: 4px 0 8px;
+  }
+</style>
+
+<body>
+  <div class="container">
+
+    <h1>📊 Material Tracker Dashboard</h1>
+
+    <div class="cards">
+      <div class="card">📦 Total Materials: <span id="total">0</span></div>
+      <div class="card warning">⚠ Low Stock: <span id="low">0</span></div>
+      <div class="card success">📈 Usage Increasing</div>
+      <div class="card info">☁ Stable Supply</div>
+    </div>
+
+    <div class="chart-box">
+      <h3>Material Usage</h3>
+      <canvas id="chart"></canvas>
+    </div>
+
+    <div class="grid">
+      <div class="box">
+        <h3>🔍 Insights</h3>
+        <ul id="insights"></ul>
+      </div>
+      <div class="box">
+        <h3>🚨 Alerts</h3>
+        <ul id="alerts"></ul>
+      </div>
+    </div>
+
+    <div class="input-box">
+      <h3>Enter Material Data</h3>
+      <select id="name">
+        <option value="">-- Select Material --</option>
+        <option value="Cement">Cement</option>
+        <option value="Steel">Steel</option>
+        <option value="Sand">Sand</option>
+        <option value="Bricks">Bricks</option>
+        <option value="Gravel">Gravel</option>
+        <option value="Wood">Wood</option>
+        <option value="Glass">Glass</option>
+        <option value="Paint">Paint</option>
+        <option value="Copper">Copper</option>
+        <option value="Aluminum">Aluminum</option>
+      </select>
+      <input type="number" id="quantity" placeholder="Quantity">
+      <button onclick="addMaterial()">➕ Add Material</button>
+      <button class="btn-use" onclick="useMaterial()">➖ Use Material</button>
+    </div>
+
+    <div class="history-box">
+      <h3>📊 Total Added vs Used per Material</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Material</th>
+            <th>Total Added</th>
+            <th>Total Used</th>
+            <th>Net</th>
+          </tr>
+        </thead>
+        <tbody id="summary-list">
+          <tr>
+            <td colspan="4">No data yet.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="history-box">
+      <h3>📋 History Log</h3>
+      <div class="filters">
+        <!-- ✅ CHANGED -->
+        <select id="filter-search" onchange="applyFilters()">
+          <option value="">All Materials</option>
+        </select>
+
+        <select id="filter-type" onchange="applyFilters()">
+          <option value="All">All Actions</option>
+          <option value="Added">Added Only</option>
+          <option value="Used">Used Only</option>
+        </select>
+        <label>From: <input type="date" id="filter-date-from" onchange="applyFilters()"></label>
+        <label>To: <input type="date" id="filter-date-to" onchange="applyFilters()"></label>
+        <button class="btn-clear" onclick="clearFilters()">✖ Clear</button>
+      </div>
+      <p id="filter-count" class="filter-count"></p>
+      <table>
+        <thead>
+          <tr>
+            <th>Date & Time</th>
+            <th>Material</th>
+            <th>Action</th>
+            <th>Quantity</th>
+          </tr>
+        </thead>
+        <tbody id="history-list">
+          <tr>
+            <td colspan="4">No history yet.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+  <script>
+    // ── Chart ───────────────────────────────────────────────
+    function updateChart(names, quantities) {
+      const canvas = document.getElementById("chart");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      if (window.myChart instanceof Chart) window.myChart.destroy();
+
+      window.myChart = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: names,
+          datasets: [{
+            label: "Material Quantity",
+            data: quantities,
+            backgroundColor: "#ffffff",
+            borderColor: "#e6eefc",
+            borderWidth: 1,
+            borderRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          layout: { padding: { bottom: 20 } },
+          plugins: {
+            legend: { labels: { color: "#ffffff" } }
+          },
+          scales: {
+            x: {
+              ticks: {
+                color: "#cbdaf0",
+                autoSkip: false,
+                maxRotation: 0,
+                minRotation: 0
+              },
+              grid: { color: "rgba(255,255,255,0.1)" }
+            },
+            y: {
+              beginAtZero: true,
+              ticks: { color: "#cbdaf0" },
+              grid: { color: "rgba(255,255,255,0.1)" }
+            }
+          }
+        }
+      });
+    }
+
+    // ── Summary Table ───────────────────────────────────────
+    function updateSummary(summary) {
+      const tbody = document.getElementById("summary-list");
+      const keys = Object.keys(summary);
+      if (keys.length === 0) {
+        tbody.innerHTML = "<tr><td colspan='4'>No data yet.</td></tr>";
+        return;
+      }
+      tbody.innerHTML = keys.map(name => {
+        const net = summary[name].added - summary[name].used;
+        return `
+        <tr>
+            <td>${name}</td>
+            <td class="col-added">+${summary[name].added}</td>
+            <td class="col-used">-${summary[name].used}</td>
+            <td class="${net >= 0 ? 'col-added' : 'col-used'}">${net >= 0 ? '+' : ''}${net}</td>
+        </tr>`;
+      }).join("");
+    }
+
+    // ── History ─────────────────────────────────────────────
+    let allHistory = [];
+
+    function renderHistory(list) {
+      const tbody = document.getElementById("history-list");
+      if (!list || list.length === 0) {
+        tbody.innerHTML = "<tr><td colspan='4'>No history yet.</td></tr>";
+        return;
+      }
+      tbody.innerHTML = list.map(h => `
+        <tr class="${h.type === 'Added' ? 'row-added' : 'row-used'}">
+            <td>${h.date} ${h.time}</td>
+            <td>${h.name}</td>
+            <td><span class="badge ${h.type === 'Added' ? 'badge-added' : 'badge-used'}">${h.type}</span></td>
+            <td>${h.quantity}</td>
+        </tr>
+    `).join("");
+    }
+
+    // ── Filters ─────────────────────────────────────────────
+    function applyFilters() {
+      const search = document.getElementById("filter-search").value;
+      const type = document.getElementById("filter-type").value;
+      const dateFrom = document.getElementById("filter-date-from").value;
+      const dateTo = document.getElementById("filter-date-to").value;
+
+      const filtered = allHistory.filter(h => {
+        const matchSearch = !search || h.name === search;
+        const matchType = type === "All" || h.type === type;
+        const hDate = new Date(h.datetime);
+        const matchFrom = !dateFrom || hDate >= new Date(dateFrom);
+        const matchTo = !dateTo || hDate <= new Date(dateTo + "T23:59:59");
+        return matchSearch && matchType && matchFrom && matchTo;
+      });
+
+      renderHistory(filtered);
+      document.getElementById("filter-count").innerText =
+        `Showing ${filtered.length} of ${allHistory.length} records`;
+    }
+
+    function clearFilters() {
+      document.getElementById("filter-search").value = "";
+      document.getElementById("filter-type").value = "All";
+      document.getElementById("filter-date-from").value = "";
+      document.getElementById("filter-date-to").value = "";
+      applyFilters();
+    }
+
+    // ── Fetch ───────────────────────────────────────────────
+    async function fetchData() {
+      try {
+        const res = await fetch("/materials");
+        const result = await res.json();
+        const data = result.materials;
+
+        document.getElementById("total").innerText = data.length;
+        document.getElementById("low").innerText = data.filter(d => d.quantity < 10).length;
+
+        updateChart(data.map(d => d.name), data.map(d => d.quantity));
+
+        document.getElementById("insights").innerHTML =
+          result.insights.map(i => `<li>${i}</li>`).join("");
+        document.getElementById("alerts").innerHTML =
+          (result.alerts || []).map(a => `<li>${a}</li>`).join("");
+
+        // ✅ Populate dropdown
+        const materialSet = new Set(data.map(d => d.name));
+        const dropdown = document.getElementById("filter-search");
+        dropdown.innerHTML = `<option value="">All Materials</option>` +
+          [...materialSet].map(m => `<option value="${m}">${m}</option>`).join("");
+
+        allHistory = result.history || [];
+        applyFilters();
+        updateSummary(result.summary || {});
+
+      } catch (err) { console.error("Error fetching data:", err); }
+    }
+
+    // ── Add / Use ───────────────────────────────────────────
+    async function addMaterial() {
+      const name = document.getElementById("name").value;
+      const quantity = document.getElementById("quantity").value;
+      if (!name || !quantity) { alert("Please fill all fields"); return; }
+
+      const res = await fetch("/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, quantity: Number(quantity) })
+      });
+
+      const result = await res.json();
+      if (result.error) { alert(result.error); return; }
+
+      document.getElementById("name").value = "";
+      document.getElementById("quantity").value = "";
+      fetchData();
+    }
+
+    async function useMaterial() {
+      const name = document.getElementById("name").value;
+      const quantity = document.getElementById("quantity").value;
+      if (!name || !quantity) { alert("Please fill all fields"); return; }
+
+      const res = await fetch("/use", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, quantity: Number(quantity) })
+      });
+
+      const result = await res.json();
+      if (result.error) { alert(result.error); return; }
+
+      document.getElementById("name").value = "";
+      document.getElementById("quantity").value = "";
+      fetchData();
+    }
+
+    setInterval(fetchData, 8000);
+    fetchData();
+  </script>
+</body>
+
+</html>

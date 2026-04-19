@@ -1,129 +1,1013 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Site Photo Gallery</title>
-    <style>
-        .gallery {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-        }
-        .gallery img {
-            width: 200px;
-        }
-    </style>
-</head>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reports — SiteAudit</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
 
-<body>
-    <h2>Site Photo Gallery</h2>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-    <h3>Before Work</h3>
-    <input type="file" accept="image/*" capture="environment" id="beforePhoto" multiple>
-    <br><br>
-    <div id="beforeGallery" class="gallery"></div>
+    html,
+    body {
+      font-family: "Poppins", sans-serif;
+      color: white;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-    <h3>After Work</h3>
-    <input type="file" accept="image/*" capture="environment" id="afterPhoto" multiple>
-    <br><br>
-    <div id="afterGallery" class="gallery"></div>
+    img.bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: -1;
+      opacity: 0.65;
+    }
 
-    <p id="location">Checking location...</p>
+    .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 
-    <canvas id="canvas" style="display:none;"></canvas>
+    background: rgba(0, 0, 0, 0.65);
+    z-index: -1;
+  }
 
-    <button onclick="submitData()">Submit</button>
+
+    /* ── HEADER ── */
+    .header {
+      display: flex;
+      padding: 8px 20px;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      border-radius: 12px;
+      margin: 8px;
+      border: 2px solid rgba(0, 40, 25, 0.55);
+      position: sticky;
+      top: 8px;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .brand-logo {
+      width: 41px;
+      height: 41px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(238, 237, 236, 0.425);
+      box-shadow: 0 0 10px #202b35;
+      flex-shrink: 0;
+    }
+
+    .brand-name {
+      font-size: 24px;
+      font-weight: 700;
+      color: rgb(237, 236, 234);
+      letter-spacing: 1px;
+      text-shadow: 0px 2px 8px rgba(0, 0, 0, 0.7);
+      white-space: nowrap;
+    }
+
+    .nav {
+      display: flex;
+      gap: 50px;
+      align-items: center;
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: white;
+      font-size: 20px;
+      font-weight: 500;
+      transition: scale 0.2s ease;
+    }
+
+    .nav a:hover {
+      scale: 1.05;
+    }
+
+    .nav a#authNavBtn.signout {
+      color: white;
+      border: 1px solid white;
+      padding: 4px 16px;
+      border-radius: 6px;
+      font-size: 18px;
+      transition:
+        background 0.2s,
+        scale 0.2s ease;
+    }
+
+    .nav a#authNavBtn.signout:hover {
+      background: rgba(255, 173, 20, 0.15);
+      scale: 1.05;
+    }
+
+    .user-greeting {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 4px 14px;
+      border-radius: 20px;
+    }
+
+    .user-greeting.visible {
+      display: flex;
+    }
+    .user-greeting img {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    /* ── AUTH POPUP ── */
+    .auth-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .auth-overlay.show {
+      display: flex;
+    }
+
+    .auth-popup {
+      background: rgba(10, 10, 10, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      padding: 36px 32px;
+      text-align: center;
+      max-width: 360px;
+      width: 90%;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+      animation: popIn 0.2s ease;
+    }
+
+    @keyframes popIn {
+      from {
+        transform: scale(0.92);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .auth-popup .lock-icon {
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+    .auth-popup h3 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .auth-popup p {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.55);
+      margin-bottom: 24px;
+    }
+
+    .auth-popup .btn-signin {
+      display: block;
+      width: 100%;
+      padding: 11px;
+      background: rgb(255, 173, 20);
+      color: black;
+      font-family: "Poppins", sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+      transition: opacity 0.2s;
+    }
+
+    .auth-popup .btn-signin:hover {
+      opacity: 0.88;
+    }
+
+    .auth-popup .btn-cancel {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: rgba(255, 255, 255, 0.6);
+      font-family: "Poppins", sans-serif;
+      font-size: 14px;
+      padding: 9px;
+      width: 100%;
+      border-radius: 8px;
+      cursor: pointer;
+      box-sizing: border-box;
+      transition: background 0.2s;
+    }
+
+    .auth-popup .btn-cancel:hover {
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    /* ── PAGE BODY ── */
+    .page-body {
+      padding: 30px 20px 60px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    /* ── TAB BAR ── */
+    .tab-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .tab-btn {
+      padding: 10px 28px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.06);
+      color: rgba(255, 255, 255, 0.6);
+      font-family: "Poppins", sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: rgb(255, 173, 20);
+      color: black;
+      border-color: rgb(255, 173, 20);
+      font-weight: 700;
+    }
+
+    .tab-btn:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    /* ── FORM ── */
+    .form-card {
+      background: rgba(10, 10, 10, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(14px);
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .form-card h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-group label {
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 10px 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 8px;
+      font-size: 14px;
+      color: white;
+      font-family: "Poppins", sans-serif;
+      transition:
+        border-color 0.2s,
+        background 0.2s;
+      outline: none;
+    }
+
+    .form-group select option {
+      background: #1c1f23;
+      color: white;
+    }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: rgb(255, 173, 20);
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .form-group textarea {
+      height: 80px;
+      resize: vertical;
+    }
+
+    .file-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px dashed rgba(255, 255, 255, 0.25);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.5);
+      transition:
+        border-color 0.2s,
+        background 0.2s;
+    }
+
+    .file-label:hover {
+      border-color: rgb(255, 173, 20);
+      background: rgba(255, 173, 20, 0.06);
+      color: rgb(255, 173, 20);
+    }
+    .file-label input {
+      display: none;
+    }
+
+    #fileNameDisplay {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.4);
+      margin-top: 4px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      margin-top: 24px;
+      padding: 13px;
+      background: rgb(255, 173, 20);
+      color: black;
+      font-family: "Poppins", sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 2px 14px rgba(255, 173, 20, 0.35);
+      transition:
+        opacity 0.2s,
+        transform 0.15s;
+    }
+
+    .submit-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+    .submit-btn.loading {
+      opacity: 0.65;
+      pointer-events: none;
+    }
+
+    /* ── TOAST ── */
+    .toast {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #10b981;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 20px;
+      animation: fadeInDown 0.3s ease;
+    }
+
+    .toast.show {
+      display: flex;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ── REPORTS LIST ── */
+    .reports-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .reports-header h2 {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .report-count {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.07);
+      padding: 4px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .reports-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 680px) {
+      .reports-grid {
+        grid-template-columns: 1fr;
+      }
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .report-card {
+      background: rgba(10, 10, 10, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      transition:
+        border-color 0.2s,
+        transform 0.2s;
+    }
+
+    .report-card:hover {
+      border-color: rgba(255, 173, 20, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .report-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      gap: 10px;
+    }
+
+    .report-card-header .location {
+      font-size: 15px;
+      font-weight: 600;
+      color: white;
+      line-height: 1.3;
+    }
+
+    .work-type-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .badge-Concrete {
+      background: rgba(59, 130, 246, 0.2);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    .badge-Steel {
+      background: rgba(156, 163, 175, 0.2);
+      color: #9ca3af;
+      border: 1px solid rgba(156, 163, 175, 0.3);
+    }
+    .badge-Inspection {
+      background: rgba(255, 173, 20, 0.2);
+      color: rgb(255, 173, 20);
+      border: 1px solid rgba(255, 173, 20, 0.3);
+    }
+    .badge-Finishing {
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .badge-Other {
+      background: rgba(168, 85, 247, 0.2);
+      color: #c084fc;
+      border: 1px solid rgba(168, 85, 247, 0.3);
+    }
+
+    .report-meta {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.35);
+      margin-bottom: 10px;
+    }
+
+    .report-row {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.75);
+      margin-bottom: 6px;
+      line-height: 1.5;
+    }
+
+    .report-row span {
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: block;
+      margin-bottom: 1px;
+    }
+
+    .report-issues {
+      margin-top: 8px;
+      padding: 8px 10px;
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 6px;
+      font-size: 12px;
+      color: rgba(239, 68, 68, 0.8);
+    }
+
+    .report-image {
+      margin-top: 12px;
+      width: 100%;
+      max-height: 160px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .engineer-row {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.07);
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: rgba(255, 255, 255, 0.3);
+    }
+    .empty-state .icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+    .empty-state p {
+      font-size: 15px;
+    }
+
+    .loading-state {
+      text-align: center;
+      padding: 60px;
+      color: rgba(255, 255, 255, 0.3);
+      font-size: 14px;
+    }
+  </style>
+
+  <body>
+    <img class="bg" src="../images/site2.avif" alt="" />
+    <div class="overlay"></div>
+
+    <!-- Auth popup -->
+    <div class="auth-overlay" id="authOverlay">
+      <div class="auth-popup">
+        <div class="lock-icon">🔒</div>
+        <h3>Sign in required</h3>
+        <p id="popupMsg">You need to be signed in to access this page.</p>
+        <a href="/login" class="btn-signin">Sign In</a>
+        <button class="btn-cancel" onclick="closePopup()">Maybe later</button>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+      <a href="/" class="brand">
+        <img class="brand-logo" src="../images/logo3.jpg" />
+        <span class="brand-name">SiteAudit</span>
+      </a>
+      <div class="nav">
+        <a href="/">Home</a>
+        <a href="#" onclick="guardedNav(event, '/materiallog', 'Logs')">Logs</a>
+        <a href="/gallery" style="color: rgb(255, 173, 20)">Reports</a>
+        <a href="/about">About</a>
+        <span class="user-greeting" id="userGreeting">
+          <img id="userAvatar" src="" alt="" />
+          <span id="userName"></span>
+        </span>
+        <a href="#" id="authNavBtn" onclick="handleAuthClick(event)">Login</a>
+      </div>
+    </div>
+
+    <div class="page-body">
+      <!-- Tab bar -->
+      <div class="tab-bar">
+        <button
+          class="tab-btn active"
+          id="tabSubmit"
+          onclick="switchTab('submit')"
+        >
+          📝 Submit Report
+        </button>
+        <button class="tab-btn" id="tabView" onclick="switchTab('view')">
+          📄 View Reports
+        </button>
+      </div>
+
+      <!-- SUBMIT PANEL -->
+      <div id="panelSubmit">
+        <div class="toast" id="successToast">
+          ✅ Report submitted successfully!
+        </div>
+
+        <div class="form-card">
+          <h2>New Daily Site Report</h2>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="rDate">Date</label>
+              <input type="date" id="rDate" required />
+            </div>
+
+            <div class="form-group">
+              <label for="rEngineer">Engineer Name</label>
+              <input
+                type="text"
+                id="rEngineer"
+                placeholder="e.g. Rahul Sharma"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="rLocation">Location / Site Area</label>
+              <input
+                type="text"
+                id="rLocation"
+                placeholder="e.g. Block A, Ground Floor"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="rWorkType">Work Type</label>
+              <select id="rWorkType">
+                <option>Concrete</option>
+                <option>Steel</option>
+                <option>Inspection</option>
+                <option>Finishing</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <div class="form-group full">
+              <label for="rDescription">Description</label>
+              <textarea
+                id="rDescription"
+                placeholder="Describe the work done today..."
+                required
+              ></textarea>
+            </div>
+
+            <div class="form-group full">
+              <label for="rIssues"
+                >Issues Found
+                <span style="color: rgba(255, 255, 255, 0.3); font-weight: 400"
+                  >(optional)</span
+                ></label
+              >
+              <textarea
+                id="rIssues"
+                placeholder="Any problems or concerns..."
+              ></textarea>
+            </div>
+
+            <div class="form-group full">
+              <label for="rActions">Actions Taken</label>
+              <textarea
+                id="rActions"
+                placeholder="Steps taken to address issues or complete work..."
+                required
+              ></textarea>
+            </div>
+
+            <div class="form-group full">
+              <label
+                >Upload Image
+                <span style="color: rgba(255, 255, 255, 0.3); font-weight: 400"
+                  >(optional)</span
+                ></label
+              >
+              <label class="file-label">
+                📎 Choose image file
+                <input
+                  type="file"
+                  id="rImage"
+                  name="image"
+                  accept="image/*"
+                  onchange="updateFileName(this)"
+                />
+              </label>
+              <div id="fileNameDisplay">No file chosen</div>
+            </div>
+          </div>
+          <button class="submit-btn" id="submitBtn" onclick="submitReport()">
+            Submit Report
+          </button>
+        </div>
+      </div>
+
+      <!-- VIEW PANEL -->
+      <div id="panelView" style="display: none">
+        <div class="reports-header">
+          <h2>Submitted Reports</h2>
+          <span class="report-count" id="reportCount">—</span>
+        </div>
+        <div id="reportsGrid" class="reports-grid">
+          <div class="loading-state">Loading reports...</div>
+        </div>
+      </div>
+    </div>
 
     <script>
-        let latitude = "";
-        let longitude = "";
-        let locationAllowed = false;
-        let allImages = [];
+      // ── NAV ───────────────────────────────────────────────────────────────────
+      const authBtn = document.getElementById("authNavBtn");
+      const userGreeting = document.getElementById("userGreeting");
+      const userNameEl = document.getElementById("userName");
+      const userAvatarEl = document.getElementById("userAvatar");
 
-        window.onload = function () {
-            navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    latitude = pos.coords.latitude;
-                    longitude = pos.coords.longitude;
-                    locationAllowed = true;
-
-                    document.getElementById("location").innerText =
-                        "Location ✔ (" + latitude + ", " + longitude + ")";
-                },
-                () => {
-                    alert("Location required!");
-                }
-            );
-        };
-
-        const canvas = document.getElementById("canvas");
-        const ctx = canvas.getContext("2d");
-
-        function processImage(file, galleryId) {
-            if (!locationAllowed) {
-                alert("Allow location!");
-                return;
-            }
-
-            const img = new Image();
-
-            img.onload = function () {
-                canvas.width = img.width;
-                canvas.height = img.height;
-
-                ctx.drawImage(img, 0, 0);
-
-                const now = new Date().toLocaleString();
-                const locationText = "Lat: " + latitude + " | Long: " + longitude;
-
-                ctx.font = "20px Arial";
-                ctx.fillStyle = "red";
-
-                ctx.fillText(locationText, 10, canvas.height - 40);
-                ctx.fillText(now, 10, canvas.height - 10);
-
-                const finalImage = canvas.toDataURL("image/png");
-
-                allImages.push(finalImage);
-
-                const imgEl = document.createElement("img");
-                imgEl.src = finalImage;
-
-                document.getElementById(galleryId).appendChild(imgEl);
-            };
-
-            img.src = URL.createObjectURL(file);
+      function updateNav() {
+        const raw = localStorage.getItem("user");
+        if (raw) {
+          const user = JSON.parse(raw);
+          userNameEl.textContent = user.name?.split(" ")[0] || user.email;
+          if (user.picture) {
+            userAvatarEl.src = user.picture;
+            userAvatarEl.style.display = "inline-block";
+          } else {
+            userAvatarEl.style.display = "none";
+          }
+          userGreeting.classList.add("visible");
+          authBtn.textContent = "Sign Out";
+          authBtn.classList.add("signout");
+          authBtn.removeAttribute("href");
+        } else {
+          userGreeting.classList.remove("visible");
+          authBtn.textContent = "Login";
+          authBtn.classList.remove("signout");
+          authBtn.href = "/login";
         }
+      }
 
-        document.getElementById("beforePhoto").addEventListener("change", (e) => {
-            for (let file of e.target.files) {
-                processImage(file, "beforeGallery");
-            }
+      function handleAuthClick(e) {
+        if (localStorage.getItem("user")) {
+          e.preventDefault();
+          localStorage.removeItem("user");
+          updateNav();
+        }
+      }
+
+      function guardedNav(e, url, pageName) {
+        e.preventDefault();
+        if (localStorage.getItem("user")) {
+          window.location.href = url;
+        } else {
+          document.getElementById("popupMsg").textContent =
+            `You need to be signed in to access the ${pageName} page.`;
+          document.getElementById("authOverlay").classList.add("show");
+        }
+      }
+
+      function closePopup() {
+        document.getElementById("authOverlay").classList.remove("show");
+      }
+
+      document
+        .getElementById("authOverlay")
+        .addEventListener("click", function (e) {
+          if (e.target === this) closePopup();
         });
 
-        document.getElementById("afterPhoto").addEventListener("change", (e) => {
-            for (let file of e.target.files) {
-                processImage(file, "afterGallery");
-            }
-        });
+      updateNav();
 
-        async function submitData() {
-            try {
-                const res = await fetch('/upload', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ images: allImages })
-                });
+      // ── TABS ──────────────────────────────────────────────────────────────────
+      function switchTab(tab) {
+        const isSubmit = tab === "submit";
+        document.getElementById("panelSubmit").style.display = isSubmit
+          ? "block"
+          : "none";
+        document.getElementById("panelView").style.display = isSubmit
+          ? "none"
+          : "block";
+        document
+          .getElementById("tabSubmit")
+          .classList.toggle("active", isSubmit);
+        document
+          .getElementById("tabView")
+          .classList.toggle("active", !isSubmit);
+        if (!isSubmit) loadReports();
+      }
 
-                if (res.ok) {
-                    window.location.href = "success.html";
-                } else {
-                    alert("Upload failed!");
-                }
-            } catch (err) {
-                console.error(err);
-                alert("Error submitting data");
-            }
+      // ── FILE DISPLAY ──────────────────────────────────────────────────────────
+      function updateFileName(input) {
+        document.getElementById("fileNameDisplay").textContent = input.files[0]
+          ? input.files[0].name
+          : "No file chosen";
+      }
+
+      // ── SUBMIT ────────────────────────────────────────────────────────────────
+      async function submitReport() {
+        const date = document.getElementById("rDate").value;
+        const engineer = document.getElementById("rEngineer").value.trim();
+        const location = document.getElementById("rLocation").value.trim();
+        const workType = document.getElementById("rWorkType").value;
+        const description = document
+          .getElementById("rDescription")
+          .value.trim();
+        const issues = document.getElementById("rIssues").value.trim();
+        const actions = document.getElementById("rActions").value.trim();
+        const imageFile = document.getElementById("rImage").files[0];
+
+        if (!date || !engineer || !location || !description || !actions) {
+          alert("Please fill in all required fields.");
+          return;
         }
+
+        const btn = document.getElementById("submitBtn");
+        btn.classList.add("loading");
+        btn.textContent = "Submitting...";
+
+        try {
+          const formData = new FormData();
+          formData.append("date", date);
+          formData.append("engineer", engineer);
+          formData.append("location", location);
+          formData.append("workType", workType);
+          formData.append("description", description);
+          formData.append("issues", issues);
+          formData.append("actions", actions);
+          if (imageFile) formData.append("image", imageFile);
+
+          const res = await fetch("/api/reports/submit", {
+            method: "POST",
+            body: formData,
+          });
+
+          if (res.ok) {
+            [
+              "rDate",
+              "rEngineer",
+              "rLocation",
+              "rDescription",
+              "rIssues",
+              "rActions",
+            ].forEach((id) => {
+              document.getElementById(id).value = "";
+            });
+            document.getElementById("rImage").value = "";
+            document.getElementById("fileNameDisplay").textContent =
+              "No file chosen";
+
+            const toast = document.getElementById("successToast");
+            toast.classList.add("show");
+            setTimeout(() => toast.classList.remove("show"), 3500);
+          } else {
+            const err = await res.json();
+            alert("Error: " + (err.error || "Submission failed"));
+          }
+        } catch (err) {
+          alert("Network error. Please try again.");
+          console.error(err);
+        } finally {
+          btn.classList.remove("loading");
+          btn.textContent = "Submit Report";
+        }
+      }
+
+      // ── LOAD REPORTS ──────────────────────────────────────────────────────────
+      async function loadReports() {
+        const grid = document.getElementById("reportsGrid");
+        grid.innerHTML = '<div class="loading-state">Loading reports...</div>';
+
+        try {
+          const res = await fetch("/api/reports");
+          const data = await res.json();
+          const reports = data.reports || [];
+
+          document.getElementById("reportCount").textContent =
+            reports.length + " report" + (reports.length !== 1 ? "s" : "");
+
+          if (reports.length === 0) {
+            grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+            <div class="icon">📋</div><p>No reports yet. Submit the first one!</p></div>`;
+            return;
+          }
+
+          const sorted = [...reports].reverse();
+
+          grid.innerHTML = sorted
+            .map((r) => {
+              const badgeClass =
+                "badge-" + (r.workType || "Other").replace(/\s+/g, "");
+              const issueHtml =
+                r.issues &&
+                r.issues.toLowerCase() !== "none" &&
+                r.issues.trim() !== ""
+                  ? `<div class="report-issues">⚠️ ${esc(r.issues)}</div>`
+                  : "";
+              const imageHtml = r.image
+                ? `<img class="report-image" src="/uploads/${esc(r.image)}" alt="Site photo" loading="lazy" />`
+                : "";
+
+              return `
+            <div class="report-card">
+              <div class="report-card-header">
+                <div class="location">${esc(r.location)}</div>
+                <span class="work-type-badge ${badgeClass}">${esc(r.workType)}</span>
+              </div>
+              <div class="report-meta">📅 ${esc(r.date)}</div>
+              <div class="report-row"><span>Description</span>${esc(r.description)}</div>
+              <div class="report-row"><span>Actions Taken</span>${esc(r.actions)}</div>
+              ${issueHtml}
+              ${imageHtml}
+              <div class="engineer-row">👷 ${esc(r.engineer)}</div>
+            </div>`;
+            })
+            .join("");
+        } catch (err) {
+          grid.innerHTML =
+            '<div class="loading-state">Failed to load reports.</div>';
+          console.error(err);
+        }
+      }
+
+      function esc(str) {
+        if (!str) return "";
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
     </script>
-</body>
+  </body>
 </html>

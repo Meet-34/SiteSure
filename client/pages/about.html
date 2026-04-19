@@ -1,177 +1,385 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>About — SiteAudit</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — SiteAudit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+</head>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+    font-family: "Poppins", sans-serif;
+    color: white;
+  }
+
+  img.bg {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: -1;
+  }
+
+  /* NAV — identical to index.html */
+  .header {
+    display: flex;
+    padding: 8px 20px;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #0028198d;
+    border: 2px solid #0028198d;
+    border-radius: 12px;
+    height: auto;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    margin: 8px;
+  }
+
+  /* Brand logo + name on the left */
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+  }
+
+  .brand-logo {
+    width: 41px;
+    height: 41px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(238, 237, 236, 0.425);
+    box-shadow: 0 0 10px #202b35;
+    flex-shrink: 0;
+    position: static;
+    opacity: 1;
+  }
+
+  .brand-name {
+    font-size: 24px;
+    font-weight: 700;
+    color: rgb(237, 236, 234);
+    letter-spacing: 1px;
+    text-shadow: 0px 2px 8px rgba(0, 0, 0, 0.7);
+    white-space: nowrap;
+  }
+
+  .nav {
+    display: flex;
+    gap: 50px;
+    align-items: center;
+  }
+
+  .nav a {
+    text-decoration: none;
+    color: white;
+    font-size: 20px;
+    font-weight: 500;
+    transition: scale 0.2s ease;
+    font-family: "Poppins", sans-serif;
+  }
+
+  .nav a:hover {
+    scale: 1.05;
+  }
+
+  /* MAIN CONTENT */
+  .main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 70px);
+    text-align: center;
+    padding: 0 40px;
+  }
+
+  .main h1 {
+    font-size: 60px;
+    font-weight: 800;
+    line-height: 1;
+    /* text-shadow: 0px 4px 10px black; */
+    margin-bottom: 18px;
+    text-shadow: 0px 6px 20px rgba(0, 0, 0, 0.8);
+  }
+
+
+  .main p {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.8;
+    max-width: 780px;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0, 0, 0, 0.4);
+    /* adjust between 0.4–0.6 */
+    z-index: -1;
+  }
+
+  .subtitle {
+    margin-bottom: 22px;
+    font-size: 22px;
+    letter-spacing: 1px;
+  }
+
+  .user-greeting {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 4px 14px;
+    border-radius: 20px;
+  }
+
+  .user-greeting.visible {
+    display: flex;
+  }
+
+  .user-greeting img {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    position: static;
+    opacity: 1;
+    object-fit: cover;
+  }
+
+  .nav a#authNavBtn.signout {
+    color: white;
+    border: 1px solid white;
+    padding: 4px 16px;
+    border-radius: 6px;
+    font-size: 18px;
+    transition: background 0.2s, scale 0.2s ease;
+  }
+
+  .nav a#authNavBtn.signout:hover {
+    background: rgba(255, 173, 20, 0.15);
+  }
+
+  .auth-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .auth-overlay.show {
+    display: flex;
+  }
+
+  .auth-popup {
+    background: rgba(10, 10, 10, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    padding: 36px 32px;
+    text-align: center;
+    max-width: 360px;
+    width: 90%;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+    animation: popIn 0.2s ease;
+  }
+
+  @keyframes popIn {
+    from {
+      transform: scale(0.92);
+      opacity: 0;
     }
 
-    html,
-    body {
-      height: 100%;
-      overflow: hidden;
-      font-family: "Poppins", sans-serif;
-      color: white;
-    }
-
-    img.bg {
-      object-fit: cover;
-      width: 100%;
-      height: 100%;
-      position: fixed;
-      z-index: -1;
-    }
-
-    /* NAV — identical to index.html */
-    .header {
-      display: flex;
-      padding: 8px 20px;
-      justify-content: space-between;
-      align-items: center;
-      background-color: #0028198d;
-      border: 2px solid #0028198d;
-      border-radius: 12px;
-      height: auto;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(8px);
-      margin: 8px;
-    }
-
-    /* Brand logo + name on the left */
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-    }
-
-    .brand-logo {
-      width: 41px;
-      height: 41px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid rgba(238, 237, 236, 0.425);
-      box-shadow: 0 0 10px #202b35;
-      flex-shrink: 0;
-      position: static;
+    to {
+      transform: scale(1);
       opacity: 1;
     }
+  }
 
-    .brand-name {
-      font-size: 24px;
-      font-weight: 700;
-      color: rgb(237, 236, 234);
-      letter-spacing: 1px;
-      text-shadow: 0px 2px 8px rgba(0, 0, 0, 0.7);
-      white-space: nowrap;
-    }
+  .auth-popup .lock-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+  }
 
-    .nav {
-      display: flex;
-      gap: 50px;
-      align-items: center;
-    }
+  .auth-popup h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
 
-    .nav a {
-      text-decoration: none;
-      color: white;
-      font-size: 20px;
-      font-weight: 500;
-      transition: scale 0.2s ease;
-      font-family: "Poppins", sans-serif;
-    }
+  .auth-popup p {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.55);
+    margin-bottom: 24px;
+  }
 
-    .nav a:hover {
-      scale: 1.05;
-    }
+  .auth-popup .btn-signin {
+    display: block;
+    width: 100%;
+    padding: 11px;
+    background: rgb(255, 173, 20);
+    color: black;
+    font-family: "Poppins", sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    transition: opacity 0.2s;
+  }
 
-    /* MAIN CONTENT */
-    .main {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: calc(100vh - 70px);
-      text-align: center;
-      padding: 0 40px;
-    }
+  .auth-popup .btn-signin:hover {
+    opacity: 0.88;
+  }
 
-    .main h1 {
-      font-size: 60px;
-      font-weight: 800;
-      line-height: 1;
-      /* text-shadow: 0px 4px 10px black; */
-      margin-bottom: 18px;
-      text-shadow: 0px 6px 20px rgba(0, 0, 0, 0.8);
-    }
+  .auth-popup .btn-cancel {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.6);
+    font-family: "Poppins", sans-serif;
+    font-size: 14px;
+    padding: 9px;
+    width: 100%;
+    border-radius: 8px;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: background 0.2s;
+  }
 
+  .auth-popup .btn-cancel:hover {
+    background: rgba(255, 255, 255, 0.07);
+  }
+</style>
 
-    .main p {
-      font-size: 18px;
-      font-weight: 400;
-      line-height: 1.8;
-      max-width: 780px;
-      color: rgba(255, 255, 255, 0.9);
-      text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
-    }
-
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-
-      background: rgba(0, 0, 0, 0.4); /* adjust between 0.4–0.6 */
-      z-index: -1;
-    }
-
-    .subtitle {
-      margin-bottom: 22px;
-      font-size: 22px;
-      letter-spacing: 1px;
-    }
-  </style>
-  <body>
-    <img class="bg" src="../images/site2.avif" alt="" />
-    <div class="overlay"></div>
-    <div class="header">
-      <a href="index.html" class="brand">
-        <img class="brand-logo" src="../images/logo3.jpg" />
-        <span class="brand-name">SiteAudit</span>
-      </a>
-      <div class="nav">
-        <a href="index.html">Home</a>
-        <a href="materiallog.html">Logs</a>
-        <a href="gallery.html">Reports</a>
-        <a href="about.html" class="active">About</a>
-        <a href="login.html">Login</a>
-      </div>
+<body>
+  <img class="bg" src="../images/site2.avif" alt="" />
+  <div class="overlay"></div>
+  <div class="auth-overlay" id="authOverlay">
+    <div class="auth-popup">
+      <div class="lock-icon">🔒</div>
+      <h3>Sign in required</h3>
+      <p id="popupMsg">You need to be signed in to access this page.</p>
+      <a href="/login" class="btn-signin">Sign In</a>
+      <button class="btn-cancel" onclick="closePopup()">Maybe later</button>
     </div>
-
-    <div class="main">
-      <h1><span>About Us</span></h1>
-      <p class="subtitle">Precision • Transparency • Trust</p>
-      <p>
-        At SiteAudit, we bring precision and accountability to construction
-        quality assurance through consistent monitoring and structured
-        reporting. Our goal is to help teams identify risks early, prevent
-        costly errors, and ensure every stage of construction meets high
-        standards of safety and durability. We believe quality is not a one-time
-        check, but a continuous process you can rely on.
-      </p>
+  </div>
+  <div class="header">
+    <a href="/" class="brand">
+      <img class="brand-logo" src="../images/logo3.jpg" />
+      <span class="brand-name">SiteAudit</span>
+    </a>
+    <div class="nav">
+      <a href="/">Home</a>
+      <a href="#" onclick="guardedNav(event, '/materiallog', 'Logs')">Logs</a>
+      <a href="#" onclick="guardedNav(event, '/gallery', 'Gallery')">Reports</a>
+      <a href="/about">About</a>
+      <span class="user-greeting" id="userGreeting">
+        <img id="userAvatar" src="" alt="" />
+        <span id="userName"></span>
+      </span>
+      <a href="#" id="authNavBtn" onclick="handleAuthClick(event)">Login</a>
     </div>
-  </body>
+  </div>
+
+  <div class="main">
+    <h1><span>About Us</span></h1>
+    <p class="subtitle">Precision • Transparency • Trust</p>
+    <p>
+      At SiteAudit, we bring precision and accountability to construction
+      quality assurance through consistent monitoring and structured
+      reporting. Our goal is to help teams identify risks early, prevent
+      costly errors, and ensure every stage of construction meets high
+      standards of safety and durability. We believe quality is not a one-time
+      check, but a continuous process you can rely on.
+    </p>
+  </div>
+</body>
+<script>
+  const authBtn = document.getElementById("authNavBtn");
+  const userGreeting = document.getElementById("userGreeting");
+  const userNameEl = document.getElementById("userName");
+  const userAvatarEl = document.getElementById("userAvatar");
+
+  function updateNav() {
+    const raw = localStorage.getItem("user");
+    if (raw) {
+      const user = JSON.parse(raw);
+      userNameEl.textContent = user.name?.split(" ")[0] || user.email;
+      if (user.picture) {
+        userAvatarEl.src = user.picture;
+        userAvatarEl.style.display = "inline-block";
+      } else {
+        userAvatarEl.style.display = "none";
+      }
+      userGreeting.classList.add("visible");
+      authBtn.textContent = "Sign Out";
+      authBtn.classList.add("signout");
+      authBtn.removeAttribute("href");
+    } else {
+      userGreeting.classList.remove("visible");
+      authBtn.textContent = "Login";
+      authBtn.classList.remove("signout");
+      authBtn.href = "/login";
+    }
+  }
+
+  function handleAuthClick(e) {
+    const raw = localStorage.getItem("user");
+    if (raw) {
+      e.preventDefault();
+      localStorage.removeItem("user");
+      updateNav();
+    }
+  }
+
+  function guardedNav(e, url, pageName) {
+    e.preventDefault();
+    if (localStorage.getItem("user")) {
+      window.location.href = url;
+    } else {
+      document.getElementById("popupMsg").textContent =
+        `You need to be signed in to access the ${pageName} page.`;
+      document.getElementById("authOverlay").classList.add("show");
+    }
+  }
+
+  function closePopup() {
+    document.getElementById("authOverlay").classList.remove("show");
+  }
+
+  document.getElementById("authOverlay").addEventListener("click", function (e) {
+    if (e.target === this) closePopup();
+  });
+
+  updateNav();
+</script>
+
 </html>
