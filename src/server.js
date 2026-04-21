@@ -145,10 +145,16 @@ app.get("/materials", async (req, res) => {
         if (data.length > 3) insights.push("Managing multiple materials.");
 
         const totalQty = data.reduce((sum, item) => sum + item.quantity, 0);
-        if (totalQty > 100) insights.push("Stock levels are good.");
+        if (totalQty > 1000) insights.push("Stock levels are good.");
+
+        // data.forEach(item => {
+        //     if (item.quantity < 1000) alerts.push(`Low stock: ${item.name}`);
+        // });
 
         data.forEach(item => {
-            if (item.quantity < 10) alerts.push(`Low stock: ${item.name}`);
+            if(item && item.name && item.quantity < 1000){
+                alerts.push(`Low Stock: ${item.name}`);
+            }
         });
 
         const summary = {};
