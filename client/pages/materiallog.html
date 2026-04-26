@@ -300,8 +300,8 @@
       <h1>📊 Material Tracker Dashboard</h1>
 
       <div class="cards">
-        <div class="card">📦 Total Materials: <span id="total">0</span></div>
-        <div class="card warning">⚠ Low Stock: <span id="low">0</span></div>
+        <div class="card">📦 Materials</div>
+        <div class="card warning">⚠ Low Stock</div>
         <div class="card success">📈 Usage Increasing</div>
         <div class="card info">☁ Stable Supply</div>
       </div>
@@ -533,10 +533,10 @@
           const result = await res.json();
           const data = result.materials;
 
-          document.getElementById("total").innerText = data.length;
-          document.getElementById("low").innerText = data.filter(
-            (d) => d.quantity < 1000,
-          ).length;
+          // document.getElementById("total").innerText = data.length;
+          // document.getElementById("low").innerText = data.filter(
+          //   (d) => d.quantity < 1000,
+          // ).length;
 
           updateChart(
             data.map((d) => d.name),
