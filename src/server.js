@@ -158,6 +158,7 @@ app.post("/api/reports/submit", upload.single("image"), async (req, res) => {
 // ── API: Materials ────────────────────────────────────────────────────────────
 
 // GET materials + history + insights
+
 app.get("/materials", async (req, res) => {
   try {
     const data = await Material.find().lean();
@@ -171,10 +172,6 @@ app.get("/materials", async (req, res) => {
 
     const totalQty = data.reduce((sum, item) => sum + item.quantity, 0);
     if (totalQty > 1000) insights.push("Stock levels are good.");
-
-    // data.forEach(item => {
-    //     if (item.quantity < 1000) alerts.push(`Low stock: ${item.name}`);
-    // });
 
     data.forEach((item) => {
       if (item && item.name && item.quantity < 1000) {
